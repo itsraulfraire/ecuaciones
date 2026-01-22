@@ -1,29 +1,29 @@
-function analizar() {
-    const ecuacion = document.getElementById("ecuacion").value;
-    const resultado = document.getElementById("resultado");
+// ==========================
+// App principal AngularJS
+// ==========================
 
-    resultado.innerHTML = "⏳ Analizando...";
+const app = angular.module("EcuacionesApp", ["ngRoute"]);
 
-    fetch("/analizar", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ ecuacion })
-    })
-    .then(res => res.json())
-    .then(data => {
-        if (data.error) {
-            resultado.innerHTML = "❌ " + data.error;
-            return;
-        }
+// ==========================
+// Configuración de rutas
+// ==========================
+app.config(function ($routeProvider, $locationProvider) {
 
-        resultado.innerHTML = `
-            <b>Orden:</b> ${data.orden}<br>
-            <b>Grado:</b> ${data.grado}<br>
-            <b>Linealidad:</b> ${data.linealidad}<br>
-            <b>Tipo:</b> ${data.tipo}
-        `;
-    })
-    .catch(() => {
-        resultado.innerHTML = "❌ Error al analizar la ecuación";
-    });
-}
+    $locationProvider.hashPrefix("");
+
+    $routeProvider
+        .when("/", {
+            templateUrl: "ecuaciones",
+            controller: "EcuacionesCtrl"
+        })
+        .otherwise({
+            redirectTo: "/"
+        });
+});
+
+// ==========================
+// Run (opcional, ligero)
+// ==========================
+app.run(function ($rootScope) {
+    $rootScope.appTitulo = "Analizador de Ecuaciones Diferenciales";
+});
