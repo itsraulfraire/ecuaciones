@@ -38,7 +38,7 @@
     <script src="https://cdn.datatables.net/fixedheader/4.0.1/js/dataTables.fixedHeader.min.js" defer></script>
     <script src="https://cdn.datatables.net/fixedheader/4.0.1/js/fixedHeader.bootstrap5.min.js" defer></script>
 
-    <title>APP / AngularJS</title>
+    <title>Ecuaciones diferenciales</title>
 
     <!-- CSS -->
     <style>.form-control:focus {box-shadow: none !important;} label.is-invalid {padding: 3px; margin: 3px; border-radius: 3px; font-weight: bold; width: 100%;} .dt-length select, .dt-search input {font-size: 1.25rem;} html, body {overflow-x: hidden;}</style>
@@ -89,110 +89,80 @@
 
     <script src="https://js.pusher.com/8.4.0/pusher.min.js"></script>    
     <script src="{{ url_for("static", filename="js/app.js") }}"></script>
-    <script src="{{ url_for("static", filename="js/favoritos/favoritosDAO.js") }}"></script>
-    <script src="{{ url_for("static", filename="js/favoritos/favoritosService.js") }}"></script>
-    <script src="{{ url_for("static", filename="js/favoritos/favoritosCtrl.js") }}"></script>
-    <script src="{{ url_for("static", filename="js/playlists/playlistsDAO.js") }}"></script>
-    <script src="{{ url_for("static", filename="js/playlists/playlistsService.js") }}"></script>
-    <script src="{{ url_for("static", filename="js/playlists/playlistsCtrl.js") }}"></script>
     <style>
         body {
-          background: linear-gradient(135deg, #1db954 0%, #191414 100%);
-          color: #fff;
-          font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
-        }
-        #appMenu {
-          background: rgba(255, 255, 255, 0.1);
-          border-radius: 50px;
-          padding: 0.5rem 1rem;
-          margin: 1rem auto;
-          width: fit-content;
-          backdrop-filter: blur(8px);
+            background: linear-gradient(135deg, #141E30, #243B55);
+            font-family: 'Segoe UI', sans-serif;
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin: 0;
         }
         
-        #appMenu .nav-link {
-          color: #fff;
-          transition: all 0.3s ease;
+        .card {
+            background: white;
+            padding: 30px;
+            width: 420px;
+            border-radius: 14px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.3);
+            animation: fadeIn 0.6s ease;
         }
-        #appMenu .nav-link:hover,
-        #appMenu .nav-link.active {
-          color: #1db954;
-          font-weight: bold;
-          text-shadow: 0 0 10px #1db954;
+        
+        h1 {
+            text-align: center;
+            color: #243B55;
         }
-        .spinner-grow {
-          color: #1db954 !important;
+        
+        textarea {
+            width: 100%;
+            height: 90px;
+            margin-top: 15px;
+            padding: 10px;
+            font-size: 16px;
+            border-radius: 8px;
+            border: 1px solid #ccc;
         }
-        #appButtonAppearanceTheme li {
-          background: rgba(255, 255, 255, 0.15);
-          border: none;
-          color: #fff;
-          transition: all 0.3s;
+        
+        button {
+            width: 100%;
+            margin-top: 15px;
+            padding: 12px;
+            background: #243B55;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            cursor: pointer;
         }
-        #appButtonAppearanceTheme li:hover {
-          background: #1db954;
-          color: #000;
+        
+        button:hover {
+            background: #141E30;
         }
-        </style>
+        
+        .resultado {
+            margin-top: 20px;
+            background: #f4f4f4;
+            padding: 15px;
+            border-radius: 8px;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; transform: scale(0.95); }
+            to { opacity: 1; transform: scale(1); }
+        }
+    </style>
 </head>
 <body>
-    <div id="appSpinnerGrow" ng-if="spinnerGrow">
-        <div class="text-center p-5 m-5">
-            <div class="spinner-grow p-5 m-5" style="width: 80px; height: 80px;" role="status">
-                <span class="visually-hidden">Cargando...</span>
-            </div>
-        </div>
-    </div>
-
-    <div id="appBanner" class="ng-hide" ng-show="!spinnerGrow">
-        <div id="appHeader" class="text-end fw-bolder" style="font-size: 1.25rem;">
-            <i class="bi bi-clock"></i>
-            {{ '{{ angularjsHora }}' }}
-            <button class="btn btn-lg btn-cerrar-sesion ng-hide" ng-show="login">
-                <i class="bi bi-box-arrow-right"></i>
-            </button>
-        </div>
+    <div class="card">
+        <h1>📐 Analizador de Ecuaciones Diferenciales</h1>
+        <p>Ingresa la ecuación (no se resuelve, solo se analiza)</p>
     
-        <ul id="appMenu" class="nav nav-underline justify-content-center">
-            <li class="nav-item ng-hide" ng-show="!login" style="display: none;">
-                <a class="nav-link" href="#/">Iniciar Sesión</a>
-            </li>
-            <li class="nav-item ng-hide" ng-show="login">
-                <a class="nav-link" href="#/playlists">Playlists</a>
-            </li>
-            <li class="nav-item ng-hide" ng-show="login">
-                <a class="nav-link" href="#/estadoAnimo">Estado de Animo</a>
-            </li>
-            <li class="nav-item ng-hide" ng-show="login">
-                <a class="nav-link" href="#/favoritos">Favoritos</a>
-            </li>
-        </ul>
+        <textarea id="ecuacion" placeholder="Ejemplo: y'' + 3y' - 2y = 0"></textarea>
+    
+        <button onclick="analizar()">Analizar</button>
+    
+        <div id="resultado" class="resultado"></div>
     </div>
-
-    <div id="app" class="ng-hide" ng-show="!spinnerGrow">
-        <div id="appSwipeContainer">
-            <div id="appSwipeWrapper" style="cursor: grab;">
-                <div id="appContentLeft" style="visibility: hidden;">
-                    <div style="position: relative; top: 25%; left: 0; text-align: center; visibility: hidden;" data-href="{{ '{{ leftViewLink }}' }}">
-                        <h5>{{ '{{ leftView }}' }}</h5>
-                        <div class="spinner-border" style="width: 5rem; height: 5rem;" role="status">
-                            <span class="visually-hidden">Cargando...</span>
-                        </div>
-                    </div>
-                </div>
-                <div id="appContent" class="{{ '{{ slide }}' }}" ng-view></div>
-                <div id="appContentRight" style="visibility: hidden;">
-                    <div style="position: relative; top: 25%; left: 0; text-align: center; visibility: hidden;" data-href="{{ '{{ rightViewLink }}' }}">
-                        <h5>{{ '{{ rightView }}' }}</h5>
-                        <div class="spinner-border" style="width: 5rem; height: 5rem;" role="status">
-                            <span class="visually-hidden">Cargando...</span>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <div id="appSpace" style="height: 4rem;"></div>
 </body>
 </html>
