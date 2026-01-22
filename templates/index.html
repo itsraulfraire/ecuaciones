@@ -6,18 +6,32 @@
     <link rel="stylesheet" href="{{ url_for('static/js/', filename='styles.css') }}">
 </head>
 <body>
-
-<div class="card">
-    <h1>📐 Analizador de Ecuaciones Diferenciales</h1>
-    <p>Ingresa la ecuación (no se resuelve, solo se analiza)</p>
-
-    <textarea id="ecuacion" placeholder="Ejemplo: y'' + 3y' - 2y = 0"></textarea>
-
-    <button onclick="analizar()">Analizar</button>
-
-    <div id="resultado" class="resultado"></div>
-</div>
-
+    <div class="container mt-5" ng-controller="EcuacionesCtrl">
+        <div class="card shadow-lg">
+            <div class="card-body">
+                <h3 class="text-center mb-4">Analizador de Ecuaciones Diferenciales</h3>
+    
+                <div class="form-group">
+                    <label>Ingrese la ecuación diferencial</label>
+                    <input type="text" class="form-control"
+                           ng-model="ecuacion"
+                           placeholder="Ej: y'' + 3y' + y = 0">
+                </div>
+    
+                <button class="btn btn-primary w-100 mt-3" ng-click="analizar()">
+                    Analizar ecuación
+                </button>
+    
+                <div class="mt-4" ng-if="resultado">
+                    <hr>
+                    <p><strong>Orden:</strong> {{resultado.orden}}</p>
+                    <p><strong>Grado:</strong> {{resultado.grado}}</p>
+                    <p><strong>Linealidad:</strong> {{resultado.linealidad}}</p>
+                    <p><strong>Tipo:</strong> {{resultado.tipo}}</p>
+                </div>
+            </div>
+        </div>
+    </div>
 <script src="{{ url_for('static/css/', filename='app.js') }}"></script>
 </body>
 </html>
